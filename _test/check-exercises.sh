@@ -31,6 +31,7 @@ fi
 
 repo=$(cd "$(dirname "$0")/.." && pwd)
 
+echo "TRAVIS_PULL_REQUEST is $TRAVIS_PULL_REQUEST"
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
    files="$(git diff --diff-filter=d --name-only remotes/origin/master | grep "exercises/" | cut -d '/' -f -2 | sort -u | awk -v repo=$repo '{print repo"/"$1}')"
 else
