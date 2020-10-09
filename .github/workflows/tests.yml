@@ -112,19 +112,19 @@ jobs:
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}      
         run: ./_test/check-exercises.sh
-        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
+        continue-on-error: ${{ matrix.rust == 'beta' && matrix.deny_warnings == '1' }}
 
       - name: Ensure stubs compile
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
         run: sh ./_test/ensure-stubs-compile.sh
-        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
+        continue-on-error: ${{ matrix.rust == 'beta' && matrix.deny_warnings == '1' }}
 
       - name: Check exercise crate
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
         run: sh ./_test/check-exercise-crate.sh
-        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
+        continue-on-error: ${{ matrix.rust == 'beta' && matrix.deny_warnings == '1' }}
 
   nightly-compilation:
     name: Check exercises on nightly (benchmark enabled)

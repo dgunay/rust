@@ -5,10 +5,10 @@
 # set -e -o pipefail
 
 # FIXME: REMOVE THIS BEFORE MERGING
-# Fail the job on beta to see if continue-on-error it works in CI
+# Fail the job on stable to see if CI won't accept failures
 echo $DENYWARNINGS
-if [[ $(rustup show | grep -P 'beta.+default') && "$DENYWARNINGS" == '1' ]]; then
-   echo 'dying because on beta and denywarnings=1'
+if [[ $(rustup show | grep -P 'stable.+default') && "$DENYWARNINGS" == '1' ]]; then
+   echo 'dying because on stable and denywarnings=1'
    exit 1
 fi
 
