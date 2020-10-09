@@ -48,12 +48,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Sets TRAVIS_PULL_REQUEST to false if this is not a pull request.
+      - name: set TRAVIS_PULL_REQUEST
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: echo "TRAVIS_PULL_REQUEST=${PR_NUMBER:-false}" >> $GITHUB_ENV
+
       - name: Fetch configlet
         run: ./bin/fetch-configlet
 
       - name: Check configlet format
-        env:
-          TRAVIS_PULL_REQUEST: true # TODO: perhaps refactor the name
         run: ./_test/check-configlet-fmt.sh
 
       - name: Ensure readmes are updated
@@ -91,7 +95,8 @@ jobs:
       - name: Setup toolchain
         uses: actions-rs/toolchain@v1
         with:
-            toolchain: ${{ matrix.rust }}
+          toolchain: ${{ matrix.rust }}
+          default: true
 
       # Sets TRAVIS_PULL_REQUEST to false if this is not a pull request.
       - name: set TRAVIS_PULL_REQUEST
@@ -107,20 +112,24 @@ jobs:
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}      
         run: ./_test/check-exercises.sh
+        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
 
       - name: Ensure stubs compile
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
         run: sh ./_test/ensure-stubs-compile.sh
+        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
 
       - name: Check exercise crate
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
         run: sh ./_test/check-exercise-crate.sh
+        continue-on-error: ${{ matrix.rust == 'nightly' || ( matrix.rust == 'beta' && matrix.deny_warnings == '1'  ) }}
 
   nightly-compilation:
     name: Check exercises on nightly (benchmark enabled)
     runs-on: ubuntu-latest
+    continue-on-error: true # It's okay if the nightly job fails
 
     steps:
       # Checks out master locally so that it is available to the scripts.
@@ -137,6 +146,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
+          default: true
 
       - name: Check exercises
         env:
