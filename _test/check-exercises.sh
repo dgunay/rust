@@ -4,6 +4,11 @@
 # # Improve error propagation during CI
 # set -e -o pipefail
 
+# Fail the job on beta to see if continue-on-error it works in CI
+if [[ $(rustup show | grep -P 'beta.+default') ]]; then
+   exit 1
+fi
+
 # test for existence and executability of the test-exercise script
 # this depends on that
 if [ ! -f "./bin/test-exercise" ]; then
