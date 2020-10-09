@@ -101,26 +101,24 @@ jobs:
 
       # run scripts as steps
       # TODO: the TRAVIS_PULL_REQUEST variable is a holdover from before the
-      # migration to GitHub Actions. The scripts that use it may require some
-      # changes to work properly - check the workflow logs for details.
-      # TODO: I'm not sure how to conditionally set TRAVIS_PULL_REQUEST depending on 
-      # whether this is a PR or not.
+      # migration to GitHub Actions. The scripts that use it do so in order to
+      # run only on changed files.
       - name: Check exercises
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}      
-          TRAVIS_PULL_REQUEST: true
+          # TRAVIS_PULL_REQUEST: true
         run: ./_test/check-exercises.sh
 
       - name: Ensure stubs compile
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
-          TRAVIS_PULL_REQUEST: true
+          # TRAVIS_PULL_REQUEST: true
         run: sh ./_test/ensure-stubs-compile.sh
 
       - name: Check exercise crate
         env:
           DENYWARNINGS: ${{ matrix.deny_warnings }}
-          TRAVIS_PULL_REQUEST: true
+          # TRAVIS_PULL_REQUEST: true
         run: sh ./_test/check-exercise-crate.sh
 
   nightly-compilation:
